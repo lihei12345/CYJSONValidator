@@ -20,6 +20,7 @@ NSDictionary *json = @{
                                    }
                            };
 ```
+For example, wo wanna get the value of "max_num" in "config" of json;
 
 ## Normal way
 
@@ -36,7 +37,7 @@ NSDictionary *configDic1 = [json objectForKey:@"config"];
 
 ## CYJSONValidator way
 
-In Cbjective-c, `id` doesn't support `dot notation`. This is very very upset for me. Because we cann't use `chainable syntax` gracefully. But there are still some simple ways to make this.
+In Cbjective-c, `id` doesn't support `dot notation`. This is very very upset for me. Because we cann't use `chainable syntax` gracefully. But there are still some simple ways to make it.
 
 ```obj-c
 	// first way
