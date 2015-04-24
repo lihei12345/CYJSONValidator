@@ -1,0 +1,10 @@
+PODS:
+  - RPJSONValidator (0.2.0)
+
+DEPENDENCIES:
+  - RPJSONValidator (~> 0.2.0)
+
+SPEC CHECKSUMS:
+  RPJSONValidator: a079b234c0f87833b657708adb80531dc45dbe83
+
+COCOAPODS: 0.36.3
