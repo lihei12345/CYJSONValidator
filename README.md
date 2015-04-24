@@ -1,25 +1,12 @@
-//
-//  ViewController.m
-//  CYJSONValidatorDemo
-//
-//  Created by jason on 15/4/24.
-//  Copyright (c) 2015年 chenyang. All rights reserved.
-//
+# CYJSONValidator
+====
+A simple and safe wrapper for RPJSONValidator on iOS JSON data parsing. In practice, it's very verbose on handling JSON data. We wanna both safty and flexibility.This Project can make this. What's more, I make it very easy to use.
 
-#import "ViewController.h"
-#import "NSObject+CYJSONValidator.h"
 
-@interface ViewController ()
-
-@end
-
-@implementation ViewController
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
-    
-    NSDictionary *json = @{
+## Example
+======
+```obj-c
+NSDictionary *json = @{
                            @"tag1": @"star",
                            @"tag2": @"jason",
                            @"totalNum": @(1616),
@@ -32,9 +19,12 @@
                                    @"tag" : [NSNull null]
                                    }
                            };
-    
-    
-    NSDictionary *configDic1 = [json objectForKey:@"config"];
+```
+
+## Normal way
+===
+```obj-c
+NSDictionary *configDic1 = [json objectForKey:@"config"];
     if (configDic1 != nil && [configDic1 isKindOfClass:[NSDictionary class]]) {
         id number = [configDic1 objectForKey:@"max_num"];
         if ([number isKindOfClass:[NSNumber class]] || [number isKindOfClass:[NSString class]]) {
@@ -42,24 +32,32 @@
             NSLog(@"maxNum 1: %@", @(maxNum));
         }
     }
-    
-    // first way
+```
+
+## CYJSONValidator way
+====
+It's very upset. In objective-c, `id` doesn't support `dot notation`. So we cann't use chainning call. But there are still some simple ways to make this.
+
+```obj-c
+// first way
     NSDictionary *configDic2 = json.cy_dictionaryKey(@"config");
     NSInteger maxNum2 = configDic2.cy_integerKey(@"max_num");
     NSLog(@"maxNum 2: %@", @(maxNum2));
-    
+```
+
+```obj-c
     // second way
     NSInteger maxNum3 = [[json cy_dictionaryKey](@"config") cy_integerKey](@"max_num");
     NSLog(@"maxNum 3: %@", @(maxNum3));
-    
+```
+
+   
+```obj-c
     // third way
     NSInteger maxNum4 = ((NSObject *)json.cy_dictionaryKey(@"config")).cy_integerKey(@"max_num");
     NSLog(@"maxNum 4: %@", @(maxNum4));
-}
+```
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 
-@end
+
+
