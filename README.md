@@ -1,10 +1,10 @@
 # CYJSONValidator
-====
+
 A simple and safe wrapper for RPJSONValidator on iOS JSON data parsing. In practice, it's very verbose on handling JSON data. We wanna both safty and flexibility.This Project can make this. What's more, I make it very easy to use.
 
 
 ## Example
-======
+
 ```obj-c
 NSDictionary *json = @{
                            @"tag1": @"star",
@@ -22,7 +22,7 @@ NSDictionary *json = @{
 ```
 
 ## Normal way
-===
+
 ```obj-c
 NSDictionary *configDic1 = [json objectForKey:@"config"];
     if (configDic1 != nil && [configDic1 isKindOfClass:[NSDictionary class]]) {
@@ -35,11 +35,11 @@ NSDictionary *configDic1 = [json objectForKey:@"config"];
 ```
 
 ## CYJSONValidator way
-====
-It's very upset. In objective-c, `id` doesn't support `dot notation`. So we cann't use chainning call. But there are still some simple ways to make this.
+
+In Cbjective-c, `id` doesn't support `dot notation`. This is very very upset for me. Because we cann't use `chainable syntax` gracefully. But there are still some simple ways to make this.
 
 ```obj-c
-// first way
+	// first way
     NSDictionary *configDic2 = json.cy_dictionaryKey(@"config");
     NSInteger maxNum2 = configDic2.cy_integerKey(@"max_num");
     NSLog(@"maxNum 2: %@", @(maxNum2));
