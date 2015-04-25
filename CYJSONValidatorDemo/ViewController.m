@@ -52,8 +52,8 @@
     NSInteger maxNum3 = [[json cy_dictionaryKey](@"config") cy_integerKey](@"max_num");
     NSLog(@"maxNum 3: %@", @(maxNum3));
     
-    // third way
-    NSInteger maxNum4 = ((NSObject *)json.cy_dictionaryKey(@"config")).cy_integerKey(@"max_num");
+    // finally, just this!
+    NSInteger maxNum4 = json.cy_dictionaryKey(@"config").cy_integerKey(@"max_num");
     NSLog(@"maxNum 4: %@", @(maxNum4));
 }
 

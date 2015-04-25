@@ -54,14 +54,23 @@
     return block;
 }
 
-- (CYIdKeyBlock)cy_stringKey
+#define CY_TYPE_KEY_BLOCK_BODY(TYPE, BLOCK) ^TYPE *(NSString * key) {\
+    id value = BLOCK(key);\
+    return value;\
+};
+
+- (CY_TYPE_KEY_BLOCK(NSString))cy_stringKey
 {
-    return [self keyBlockWithPredicate_:RPValidatorPredicate.isString.isNotNull];
+    CYIdKeyBlock keyBlock = [self keyBlockWithPredicate_:RPValidatorPredicate.isString.isNotNull];
+    CY_TYPE_KEY_BLOCK_VAR(NSString, stringKeyBlock) = CY_TYPE_KEY_BLOCK_BODY(NSString, keyBlock);
+    return stringKeyBlock;
 }
 
-- (CYIdKeyBlock)cy_numberKey
+- (CY_TYPE_KEY_BLOCK(NSNumber))cy_numberKey
 {
-    return [self keyBlockWithPredicate_:RPValidatorPredicate.isNumber.isNotNull];
+    CYIdKeyBlock keyBlock = [self keyBlockWithPredicate_:RPValidatorPredicate.isNumber.isNotNull];
+    CY_TYPE_KEY_BLOCK_VAR(NSNumber, numberKeyBlock) = CY_TYPE_KEY_BLOCK_BODY(NSNumber, keyBlock);
+    return numberKeyBlock;
 }
 
 - (CYIdKeyBlock)cy_numberOrStringKey
@@ -81,24 +90,32 @@
     return keyBlock;
 }
 
-- (CYIdKeyBlock)cy_dictionaryKey
+- (CY_TYPE_KEY_BLOCK(NSDictionary))cy_dictionaryKey
 {
-    return [self keyBlockWithPredicate_:RPValidatorPredicate.isDictionary.isNotNull];
+    CYIdKeyBlock keyBlock = [self keyBlockWithPredicate_:RPValidatorPredicate.isDictionary.isNotNull];
+    CY_TYPE_KEY_BLOCK_VAR(NSDictionary, dicKeyBlock) = CY_TYPE_KEY_BLOCK_BODY(NSDictionary, keyBlock);
+    return dicKeyBlock;
 }
 
-- (CYIdKeyBlock)cy_arrayKey
+- (CY_TYPE_KEY_BLOCK(NSArray))cy_arrayKey
 {
-    return [self keyBlockWithPredicate_:RPValidatorPredicate.isArray.isNotNull];
+    CYIdKeyBlock keyBlock = [self keyBlockWithPredicate_:RPValidatorPredicate.isArray.isNotNull];
+    CY_TYPE_KEY_BLOCK_VAR(NSArray, arrayKeyBlock) = CY_TYPE_KEY_BLOCK_BODY(NSArray, keyBlock);
+    return arrayKeyBlock;
 }
 
-- (CYIdKeyBlock)cy_booleanKey
+- (CY_TYPE_KEY_BLOCK(NSNumber))cy_booleanKey
 {
-    return [self keyBlockWithPredicate_:RPValidatorPredicate.isBoolean.isNotNull];
+    CYIdKeyBlock keyBlock = [self keyBlockWithPredicate_:RPValidatorPredicate.isBoolean.isNotNull];
+    CY_TYPE_KEY_BLOCK_VAR(NSNumber, booleanKeyBlock) = CY_TYPE_KEY_BLOCK_BODY(NSNumber, keyBlock);
+    return booleanKeyBlock;
 }
 
-- (CYIdKeyBlock)cy_nullKey
+- (CY_TYPE_KEY_BLOCK(NSNull))cy_nullKey
 {
-    return [self keyBlockWithPredicate_:RPValidatorPredicate.isNull];
+    CYIdKeyBlock keyBlock = [self keyBlockWithPredicate_:RPValidatorPredicate.isNull];
+    CY_TYPE_KEY_BLOCK_VAR(NSNull, nullKeyBlock) = CY_TYPE_KEY_BLOCK_BODY(NSNull, keyBlock);
+    return nullKeyBlock;
 }
 
 - (NSInteger (^)(NSString *))cy_integerKey

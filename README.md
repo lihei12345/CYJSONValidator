@@ -37,25 +37,22 @@ NSDictionary *configDic1 = [json objectForKey:@"config"];
 
 ## CYJSONValidator way
 
-In Cbjective-c, `id` doesn't support `dot notation`. This is very very upset for me. Because we cann't use `chainable syntax` gracefully. But there are still some simple ways to make it.
+In Cbjective-c, `id` doesn't support `dot notation`. This is very very upset for me. So I changed return value to actual type to support `chainable syntax` gracefully. 
 
 ```obj-c
 	// first way
     NSDictionary *configDic2 = json.cy_dictionaryKey(@"config");
     NSInteger maxNum2 = configDic2.cy_integerKey(@"max_num");
     NSLog(@"maxNum 2: %@", @(maxNum2));
-```
-
-```obj-c
     // second way
     NSInteger maxNum3 = [[json cy_dictionaryKey](@"config") cy_integerKey](@"max_num");
     NSLog(@"maxNum 3: %@", @(maxNum3));
 ```
 
+#### `finally, just this!`
    
 ```obj-c
-    // third way
-    NSInteger maxNum4 = ((NSObject *)json.cy_dictionaryKey(@"config")).cy_integerKey(@"max_num");
+    NSInteger maxNum4 = json.cy_dictionaryKey(@"config").cy_integerKey(@"max_num");
     NSLog(@"maxNum 4: %@", @(maxNum4));
 ```
 
