@@ -49,13 +49,23 @@ In Cbjective-c, `id` doesn't support `dot notation`. This is very very upset for
     NSLog(@"maxNum 3: %@", @(maxNum3));
 ```
 
-#### `finally, just this!`
+#### `Or just this!`
    
 ```obj-c
-    NSInteger maxNum4 = json.cy_dictionaryKey(@"config").cy_integerKey(@"max_num");
-    NSLog(@"maxNum 4: %@", @(maxNum4));
+    NSInteger maxNum = [[json cy_dictionaryKey:@"config"] cy_integerKey:@"max_num"];
+    NSLog(@"maxNum: %@", @(maxNum));
 ```
 
+#### `error handle`
+
+```obj-c
+	// Handle NSNull
+    NSArray *tags = [json cy_arrayKey:@"tags"];
+    NSLog(@"%@", tags);
+    // Handle wrong type
+    NSString *string = [[json cy_dictionaryKey:@"data"] cy_stringKey:@"1"];
+    NSLog(@"%@", string);
+```
 
 
 

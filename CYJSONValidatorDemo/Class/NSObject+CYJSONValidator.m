@@ -17,7 +17,7 @@
 
 #pragma mark - public
 
-- (instancetype)cy_isArray
+- (id)cy_isArray
 {
     if ([self isKindOfClass:[NSArray class]]) {
         return self;
@@ -26,7 +26,7 @@
     return nil;
 }
 
-- (instancetype)cy_isDictionary
+- (id)cy_isDictionary
 {
     if ([self isKindOfClass:[NSDictionary class]]) {
         return self;
@@ -54,122 +54,137 @@
     return block;
 }
 
-#define CY_TYPE_KEY_BLOCK_BODY(TYPE, BLOCK) ^TYPE *(NSString * key) {\
-    id value = BLOCK(key);\
-    return value;\
-};
+#pragma mark - id type
 
-- (CY_TYPE_KEY_BLOCK(NSString))cy_stringKey
+- (NSString *)cy_stringKey:(NSString *)key
 {
-    CYIdKeyBlock keyBlock = [self keyBlockWithPredicate_:RPValidatorPredicate.isString.isNotNull];
-    CY_TYPE_KEY_BLOCK_VAR(NSString, stringKeyBlock) = CY_TYPE_KEY_BLOCK_BODY(NSString, keyBlock);
-    return stringKeyBlock;
+    CYIdKeyBlock keyBlock = [self keyBlockWithPredicate:RPValidatorPredicate.isString.isNotNull];
+    NSString *string = keyBlock(key);
+    return string;
 }
 
-- (CY_TYPE_KEY_BLOCK(NSNumber))cy_numberKey
+- (NSNumber *)cy_numberKey:(NSString *)key
 {
-    CYIdKeyBlock keyBlock = [self keyBlockWithPredicate_:RPValidatorPredicate.isNumber.isNotNull];
-    CY_TYPE_KEY_BLOCK_VAR(NSNumber, numberKeyBlock) = CY_TYPE_KEY_BLOCK_BODY(NSNumber, keyBlock);
-    return numberKeyBlock;
+    CYIdKeyBlock keyBlock = [self keyBlockWithPredicate:RPValidatorPredicate.isNumber.isNotNull];
+    NSNumber *number = keyBlock(key);
+    return number;
 }
 
-- (CYIdKeyBlock)cy_numberOrStringKey
+- (id)cy_numberOrStringKey:(NSString *)key
 {
-    CYIdKeyBlock keyBlock = ^id(NSString *key) {
-        if (!self.cy_isDictionary) {
-            return nil;
-        }
-        
-        if (self.cy_stringKey(key) != nil || self.cy_numberKey(key) != nil) {
-            id jsonValue = [self valueForKey:key];
-            return jsonValue;
-        }
-        
+    if (!self.cy_isDictionary) {
         return nil;
-    };
-    return keyBlock;
+    }
+    
+    if ([self cy_stringKey:key] != nil || [self cy_numberKey:key] != nil) {
+        id jsonValue = [self valueForKey:key];
+        return jsonValue;
+    }
+    return nil;
 }
 
-- (CY_TYPE_KEY_BLOCK(NSDictionary))cy_dictionaryKey
+- (NSDictionary *)cy_dictionaryKey:(NSString *)key
 {
-    CYIdKeyBlock keyBlock = [self keyBlockWithPredicate_:RPValidatorPredicate.isDictionary.isNotNull];
-    CY_TYPE_KEY_BLOCK_VAR(NSDictionary, dicKeyBlock) = CY_TYPE_KEY_BLOCK_BODY(NSDictionary, keyBlock);
-    return dicKeyBlock;
+    CYIdKeyBlock keyBlock = [self keyBlockWithPredicate:RPValidatorPredicate.isDictionary.isNotNull];
+    NSDictionary *dictionary = keyBlock(key);
+    return dictionary;
 }
 
-- (CY_TYPE_KEY_BLOCK(NSArray))cy_arrayKey
+- (NSArray *)cy_arrayKey:(NSString *)key
 {
-    CYIdKeyBlock keyBlock = [self keyBlockWithPredicate_:RPValidatorPredicate.isArray.isNotNull];
-    CY_TYPE_KEY_BLOCK_VAR(NSArray, arrayKeyBlock) = CY_TYPE_KEY_BLOCK_BODY(NSArray, keyBlock);
-    return arrayKeyBlock;
+    CYIdKeyBlock keyBlock = [self keyBlockWithPredicate:RPValidatorPredicate.isArray.isNotNull];
+    NSArray *array = keyBlock(key);
+    return array;
 }
 
-- (CY_TYPE_KEY_BLOCK(NSNumber))cy_booleanKey
+- (NSNumber *)cy_booleanKey:(NSString *)key
 {
-    CYIdKeyBlock keyBlock = [self keyBlockWithPredicate_:RPValidatorPredicate.isBoolean.isNotNull];
-    CY_TYPE_KEY_BLOCK_VAR(NSNumber, booleanKeyBlock) = CY_TYPE_KEY_BLOCK_BODY(NSNumber, keyBlock);
-    return booleanKeyBlock;
+    CYIdKeyBlock keyBlock = [self keyBlockWithPredicate:RPValidatorPredicate.isBoolean.isNotNull];
+    NSNumber *number = keyBlock(key);
+    return number;
 }
 
-- (CY_TYPE_KEY_BLOCK(NSNull))cy_nullKey
+- (NSNull *)cy_nullKey:(NSString *)key
 {
-    CYIdKeyBlock keyBlock = [self keyBlockWithPredicate_:RPValidatorPredicate.isNull];
-    CY_TYPE_KEY_BLOCK_VAR(NSNull, nullKeyBlock) = CY_TYPE_KEY_BLOCK_BODY(NSNull, keyBlock);
-    return nullKeyBlock;
+    CYIdKeyBlock keyBlock = [self keyBlockWithPredicate:RPValidatorPredicate.isNull];
+    NSNull *null = keyBlock(key);
+    return null;
 }
 
-- (NSInteger (^)(NSString *))cy_integerKey
+#pragma mark - basic type
+
+#define CY_BASIC_TYPE_FUNCTION_KEY(TYPE, TYPE_METHOD) id value = [self cy_numberOrStringKey:key];\
+TYPE result = defaultValue;\
+if (value) {\
+result = [value TYPE_METHOD];\
+}\
+return result;
+
+- (NSInteger)cy_integerKey:(NSString *)key
 {
-    NSInteger (^keyBlock)(NSString *)= ^NSInteger(NSString *key) {
-        return [self.cy_numberOrStringKey(key) integerValue];
-    };
-    return keyBlock;
+    return [[self cy_numberOrStringKey:key] integerValue];
 }
 
-- (double (^)(NSString *))cy_doubleKey
+
+- (NSInteger)cy_integerKey:(NSString *)key defaultValue:(NSInteger)defaultValue
 {
-    double (^keyBlock)(NSString *)= ^double(NSString *key) {
-        return [self.cy_numberOrStringKey(key) doubleValue];
-    };
-    return keyBlock;
+    CY_BASIC_TYPE_FUNCTION_KEY(NSInteger, integerValue);
 }
 
-- (float (^)(NSString *))cy_floatKey
+- (double)cy_doubleKey:(NSString *)key
 {
-    float (^keyBlock)(NSString *)= ^float(NSString *key) {
-        return [self.cy_numberOrStringKey(key) floatValue];
-    };
-    return keyBlock;
+    return [[self cy_numberOrStringKey:key] doubleValue];
 }
 
-- (int (^)(NSString *))cy_intKey
+- (double)cy_doubleKey:(NSString *)key defaultValue:(double)defaultValue
 {
-    int (^keyBlock)(NSString *)= ^int(NSString *key) {
-        return [self.cy_numberOrStringKey(key) intValue];
-    };
-    return keyBlock;
+    CY_BASIC_TYPE_FUNCTION_KEY(double, doubleValue);
 }
 
-- (long long (^)(NSString *))cy_longLongKey
+- (float)cy_floatKey:(NSString *)key
 {
-    long long (^keyBlock)(NSString *)= ^long long(NSString *key) {
-        return [self.cy_numberOrStringKey(key) longLongValue];
-    };
-    return keyBlock;
+    return [[self cy_numberOrStringKey:key] floatValue];
 }
 
-- (BOOL (^)(NSString *))cy_boolKey
+- (float)cy_floatKey:(NSString *)key defaultValue:(float)defaultValue
 {
-    BOOL (^keyBlock)(NSString *)= ^BOOL(NSString *key) {
-        return [self.cy_numberOrStringKey(key) boolValue];
-    };
-    return keyBlock;
+    CY_BASIC_TYPE_FUNCTION_KEY(float, floatValue);
+}
+
+- (int)cy_intKey:(NSString *)key
+{
+    return [[self cy_numberOrStringKey:key] intValue];
+}
+
+- (int)cy_intKey:(NSString *)key defaultValue:(int)defaultValue
+{
+    CY_BASIC_TYPE_FUNCTION_KEY(int, intValue);
+}
+
+- (long long)cy_longLongKey:(NSString *)key
+{
+    return [[self cy_numberOrStringKey:key] longLongValue];
+}
+
+- (long long)cy_longLongKey:(NSString *)key defaultValue:(long long)defaultValue
+{
+    CY_BASIC_TYPE_FUNCTION_KEY(long long, longLongValue);
+}
+
+- (BOOL)cy_boolKey:(NSString *)key
+{
+    return [[self cy_numberOrStringKey:key] boolValue];
+}
+
+
+- (BOOL)cy_boolKey:(NSString *)key defaultValue:(BOOL)defaultValue
+{
+    CY_BASIC_TYPE_FUNCTION_KEY(BOOL, boolValue);
 }
 
 #pragma mark - helper
 
-
-- (CYIdKeyBlock)keyBlockWithPredicate_:(RPValidatorPredicate *)predicate
+- (CYIdKeyBlock)keyBlockWithPredicate:(RPValidatorPredicate *)predicate
 {
     CYIdKeyBlock keyBlock = ^id(NSString *key){
         return self.cy_validatorKey(key, predicate);

@@ -12,30 +12,34 @@
 typedef id (^CYValidatorBlock)(NSString *key, RPValidatorPredicate *predicate);
 typedef id (^CYIdKeyBlock)(NSString *key);
 
-#define CY_TYPE_KEY_BLOCK(TYPE) TYPE *(^)(NSString *)
-#define CY_TYPE_KEY_BLOCK_VAR(TYPE, VAR) TYPE *(^VAR)(NSString *)
 
 @interface NSObject (CYJSONValidator)
 
-- (instancetype)cy_isArray;
-- (instancetype)cy_isDictionary;
+- (id)cy_isArray;
+- (id)cy_isDictionary;
 
 - (CYValidatorBlock)cy_validatorKey;
 
-- (CY_TYPE_KEY_BLOCK(NSString))cy_stringKey;
-- (CY_TYPE_KEY_BLOCK(NSNumber))cy_numberKey;
-- (CYIdKeyBlock)cy_numberOrStringKey;
-- (CY_TYPE_KEY_BLOCK(NSDictionary))cy_dictionaryKey;
-- (CY_TYPE_KEY_BLOCK(NSArray))cy_arrayKey;
-- (CY_TYPE_KEY_BLOCK(NSNumber))cy_booleanKey;
-- (CY_TYPE_KEY_BLOCK(NSNull))cy_nullKey;
+- (NSString *)cy_stringKey:(NSString *)key;
+- (NSNumber *)cy_numberKey:(NSString *)key;
+- (id)cy_numberOrStringKey:(NSString *)key;
+- (NSDictionary *)cy_dictionaryKey:(NSString *)key;
+- (NSArray *)cy_arrayKey:(NSString *)key;
+- (NSNumber *)cy_booleanKey:(NSString *)key;
+- (NSNull *)cy_nullKey:(NSString *)key;
 
-- (NSInteger (^)(NSString *))cy_integerKey;
-- (double (^)(NSString *))cy_doubleKey;
-- (float (^)(NSString *))cy_floatKey;
-- (int (^)(NSString *))cy_intKey;
-- (long long (^)(NSString *))cy_longLongKey;
-- (BOOL (^)(NSString *))cy_boolKey;
+- (NSInteger)cy_integerKey:(NSString *)key;
+- (NSInteger)cy_integerKey:(NSString *)key defaultValue:(NSInteger)defaultValue;
+- (double)cy_doubleKey:(NSString *)key;
+- (double)cy_doubleKey:(NSString *)key defaultValue:(double)defaultValue;
+- (float)cy_floatKey:(NSString *)key;
+- (float)cy_floatKey:(NSString *)key defaultValue:(float)defaultValue;
+- (int)cy_intKey:(NSString *)key;
+- (int)cy_intKey:(NSString *)key defaultValue:(int)defaultValue;
+- (long long)cy_longLongKey:(NSString *)key;
+- (long long)cy_longLongKey:(NSString *)key defaultValue:(long long)defaultValue;
+- (BOOL)cy_boolKey:(NSString *)key;
+- (BOOL)cy_boolKey:(NSString *)key defaultValue:(BOOL)defaultValue;
 
 @end
 

@@ -25,7 +25,7 @@
                            @"totalNum": @(1616),
                            @"start_index": @"60",
                            @"return_number": @(30),
-                           @"data" : @[],
+                           @"data" : @[@"1", @"2"],
                            @"tags" : [NSNull null],
                            @"config" : @{
                                    @"max_num" : @(30000),
@@ -33,7 +33,7 @@
                                    }
                            };
     
-    
+    // Normal
     NSDictionary *configDic1 = [json objectForKey:@"config"];
     if (configDic1 != nil && [configDic1 isKindOfClass:[NSDictionary class]]) {
         id number = [configDic1 objectForKey:@"max_num"];
@@ -43,18 +43,17 @@
         }
     }
     
-    // first way
-    NSDictionary *configDic2 = json.cy_dictionaryKey(@"config");
-    NSInteger maxNum2 = configDic2.cy_integerKey(@"max_num");
-    NSLog(@"maxNum 2: %@", @(maxNum2));
+    // Or just this!
+    NSInteger maxNum = [[json cy_dictionaryKey:@"config"] cy_integerKey:@"max_num"];
+    NSLog(@"maxNum: %@", @(maxNum));
     
-    // second way
-    NSInteger maxNum3 = [[json cy_dictionaryKey](@"config") cy_integerKey](@"max_num");
-    NSLog(@"maxNum 3: %@", @(maxNum3));
+    // Handle NSNull
+    NSArray *tags = [json cy_arrayKey:@"tags"];
+    NSLog(@"%@", tags);
     
-    // finally, just this!
-    NSInteger maxNum4 = json.cy_dictionaryKey(@"config").cy_integerKey(@"max_num");
-    NSLog(@"maxNum 4: %@", @(maxNum4));
+    // Handle wrong type
+    NSString *string = [[json cy_dictionaryKey:@"data"] cy_stringKey:@"1"];
+    NSLog(@"%@", string);
 }
 
 - (void)didReceiveMemoryWarning {
