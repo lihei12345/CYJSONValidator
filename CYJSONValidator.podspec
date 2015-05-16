@@ -3,7 +3,7 @@ Pod::Spec.new do |spec|
   spec.version      = '0.1'
   spec.authors      = 'Jason li'
   spec.homepage     = 'http://blog.csdn.net/lihei12345'
-  spec.source       = { :git => 'git@github.com:lihei12345/CYJSONValidator.git', :tag => '0.1'}
+  spec.source       = { :git => 'https://github.com/lihei12345/CYJSONValidator.git', :tag => "#{spec.version}"}
   spec.license      = {
       :type => 'Copyright',
       :text => <<-LICENSE
