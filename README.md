@@ -40,11 +40,6 @@ NSDictionary *configDic1 = [json objectForKey:@"config"];
 In Cbjective-c, `id` doesn't support `dot notation`. This is very very upset for me. So I changed return value to actual type to support `chainable syntax` gracefully. 
 
 ```obj-c
-	// first way
-    NSDictionary *configDic2 = json.cy_dictionaryKey(@"config");
-    NSInteger maxNum2 = configDic2.cy_integerKey(@"max_num");
-    NSLog(@"maxNum 2: %@", @(maxNum2));
-    // second way
     NSInteger maxNum3 = [[json cy_dictionaryKey](@"config") cy_integerKey](@"max_num");
     NSLog(@"maxNum 3: %@", @(maxNum3));
 ```
