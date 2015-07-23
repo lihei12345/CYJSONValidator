@@ -46,6 +46,9 @@
     // Or just this!
     NSInteger maxNum = [[json cy_dictionaryKey:@"config"] cy_integerKey:@"max_num"];
     NSLog(@"maxNum: %@", @(maxNum));
+    // default value
+    NSInteger minNum = [[json cy_dictionaryKey:@"config"] cy_integerKey:@"min_num" defaultValue:-1];
+    NSLog(@"minNum: %@", @(minNum));
     
     // Handle NSNull
     NSArray *tags = [json cy_arrayKey:@"tags"];
